@@ -1,0 +1,15 @@
+&	Imports
+"Machiney, Electrical Equipment"	35.539654
+"Vehicle, Aircraft, Vessel & Transport Equip"	25.193474
+"Optical, Photographic, Muscial Instrument"	8.026672
+Product of Chemcial 	7.913694
+Base Metal and Article	6.09571
+Plastic and  Rubber 	3.857632
+Others	4.134121
+&title=China imports from Germany	
+"&subtitle=Rolling 12-month sum, June 2013 bn$"	
+&source=CEIC	
+&footnote=delete if not required	
+&comment=PIE chart	
+&doublescale=0	
+&accumulate=false	

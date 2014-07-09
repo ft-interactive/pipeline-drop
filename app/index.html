@@ -1,0 +1,117 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+<title>PIPE</title>
+<script type="text/javascript" src="bower_components/d3/d3.js"></script>
+<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-date-axis.js"></script>
+<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-value-axis.js"></script>
+<script type="text/javascript" src="scripts/pipeline-parse.js"></script>
+<script type="text/javascript" src="scripts/linechart.js"></script>
+<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/axes.css">
+</head>
+<body>
+
+<style type="text/css">
+	* {
+		font-family: sans-serif;
+	}
+
+	#holder { 
+		border: 1px dashed #ccc; 
+		width: 300px; 
+		height: 300px; 
+		padding: 50px; 
+		margin: 20px auto;
+		color: #ccc;
+		background-image: url('images/magritte.jpg');
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+
+	#holder.hover { 
+		border: 1px dashed #333; 
+		color: #333;
+	}
+
+	#status {
+		color: #eee;
+	}
+
+	#line-chart{
+	}
+</style>
+<style type="text/css">
+	svg.error{
+		border: solid 5px #f00;
+	}
+
+	path.line{
+		fill:none;
+		stroke:#000;
+		stroke-width:1;
+	}
+</style>
+
+  <div id="holder"> Drop a pipeline file in here!</div> 
+  <div id="line-chart"></div>
+  <hr>
+  <div>
+  	<div id="date-parsers-switch"></div>
+  	<div id="line-colour-switches"></div>
+  	TODO : Controls: line colour, date pattern
+  </div>
+</body>
+
+<script type="text/javascript">
+	var addEvent = (function () {
+	  if (document.addEventListener) {
+	    return function (el, type, fn) {
+	      if (el && el.nodeName || el === window) {
+	        el.addEventListener(type, fn, false);
+	      } else if (el && el.length) {
+	        for (var i = 0; i < el.length; i++) {
+	          addEvent(el[i], type, fn);
+	        }
+	      }
+	    };
+	  } else {
+	    return function (el, type, fn) {
+	      if (el && el.nodeName || el === window) {
+	        el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
+	      } else if (el && el.length) {
+	        for (var i = 0; i < el.length; i++) {
+	          addEvent(el[i], type, fn);
+	        }
+	      }
+	    };
+	  }
+	})();
+</script>
+
+<script>
+	var holder = document.getElementById('holder');
+	holder.ondragover = function () { this.className = 'hover'; return false; };
+	holder.ondragend = function () { this.className = ''; return false; };
+	holder.ondrop = function (e) {
+		this.className = '';
+		e.preventDefault();
+
+		var file = e.dataTransfer.files[0],
+			reader = new FileReader();
+
+		reader.onload = function (event) {
+			var pipeline = pipelineParse(event.target.result);
+			var errors = lineChart(pipeline, '#line-chart').error;
+			if(Object.keys(errors).length > 0){
+				d3.select('#line-chart').select('svg').attr('class','error');
+				console.log('err',errors);
+			}
+		};
+		reader.readAsText(file);
+		return false;
+	};
+</script>
+</html>

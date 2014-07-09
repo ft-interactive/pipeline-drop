@@ -1,0 +1,11 @@
+&	Service revenues	Subscribers
+T-Mobile	34	33
+Vodafone	35	29
+E-Plus	16	21
+Telefonica Deutschland	15	17
+&title=European telecom companies		
+&subtitle=Market share (%)		
+&source=Citi Research		
+&comment=Any message you want Graphics to see during processing; delete if not required		
+&doublescale=0		
+&accumulate=false		

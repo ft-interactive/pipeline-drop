@@ -1,0 +1,16 @@
+&	residential property prices % change in year to June
+2006	16.6
+2007	9.4
+2008	-5.2
+2009	-19.6
+2010	-12.5
+2011	-12.9
+2012	-14.4
+2013	1.2
+&title=Irish residential property prices	
+&subtitle=Annual % change	
+&source=Central Statistics Office	
+&footnote=delete if not required	
+&comment=Line chart	
+&doublescale=0	
+&accumulate=false	
