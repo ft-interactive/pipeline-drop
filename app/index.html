@@ -1,16 +1,27 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset=utf-8>
 <title>PIPE</title>
-<script type="text/javascript" src="bower_components/d3/d3.js"></script>
-<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-date-axis.js"></script>
-<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-value-axis.js"></script>
-<script type="text/javascript" src="scripts/pipeline-parse.js"></script>
-<script type="text/javascript" src="scripts/linechart.js"></script>
-<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/axes.css">
+
+	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+
+	<!-- chart drawing -->
+	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-date-axis.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-value-axis.js"></script>
+	<script type="text/javascript" src="scripts/linechart.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/axes.css">
+
+	<!-- data parsing -->
+	<script type="text/javascript" src="scripts/pipeline-parse.js"></script>
+
+	<!-- UI -->
+	<script type="text/javascript" src="bower_components/ig-switches/switches.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="styles/switchstyles.css">
+
 </head>
 <body>
 
@@ -18,22 +29,35 @@
 	* {
 		font-family: sans-serif;
 	}
+	#ui{
+		float: left;
+	}
 
 	#holder { 
-		border: 1px dashed #ccc; 
+		border: 5px dashed #ccc; 
 		width: 300px; 
 		height: 300px; 
 		padding: 50px; 
 		margin: 20px auto;
-		color: #ccc;
-		background-image: url('images/magritte.jpg');
-		background-repeat: no-repeat;
-		background-position: center;
+		color: #333;
+		float:left;
 	}
 
 	#holder.hover { 
-		border: 1px dashed #333; 
+		border: 5px dashed #333; 
 		color: #333;
+	}
+
+	.label{
+		display: block;
+		margin-top: 1rem;
+	}
+
+	.instructions{
+		font-weight: bold;
+		font-size: 1.3rem;
+		border-bottom: 1px dotted;
+		padding-bottom: 5px;
 	}
 
 	#status {
@@ -41,31 +65,114 @@
 	}
 
 	#line-chart{
+		border: #FFF solid 1px;
+		float:left;
+		margin: 20px;
+		margin-left: 50px;
+	}
+
+	#line-chart.error{
+		border: #F00 solid 1px;
 	}
 </style>
+
+<style type="text/css">
+	line.key-line{
+		fill:none;
+		stroke-width:1.5;
+		stroke-linejoin:round;
+		stroke-linecap:round;
+	}
+</style>
+
+<style>
+	path.line{
+		fill:none;
+		stroke-width:1.5;
+		stroke-linejoin:round;
+		stroke-linecap:round;
+	}
+
+	.series1{
+		stroke:rgb(175,81,108);
+	}
+	.series2{
+		stroke:rgb(236,175,175);
+	}
+	.series3{
+		stroke:rgb(215,112,108);
+	}
+	.series4{
+		stroke:rgb(118,172,184);
+	}
+	.series5{
+		stroke:rgb(129,208,230);
+	}
+	.series6{
+		stroke:rgb(78,134,182);
+	}
+	.series7{
+		stroke:rgb(184,177,169);
+	}
+	.accent{
+		stroke:rgb(184,177,169);
+	}
+	.forecast{
+		stroke-dasharray:4,5;
+	}
+
+</style>
+
 <style type="text/css">
 	svg.error{
 		border: solid 5px #f00;
 	}
+</style>
 
-	path.line{
-		fill:none;
-		stroke:#000;
-		stroke-width:1;
+<style>
+
+	.chart-title{
+		font-size: 20px;
+		fill:rgba(0,0,0,0.5);
+	}
+
+	.chart-subtitle{
+		fill:rgba(0,0,0,0.5);
+	}
+
+
+	.chart-footnote{
+		fill:rgba(0,0,0,0.3);
+		font-size: 0.8rem;
+		font-style: italic;
+	}
+
+	.chart-source{
+		fill:rgba(0,0,0,0.3);
+		font-size: 0.8rem;
+		font-style: italic;
+	}
+
+	.key-label{
+		font-size: 13px;
+		fill:rgba(0,0,0,0.5);
 	}
 </style>
 
-  <div id="holder"> Drop a pipeline file in here!</div> 
-  <div id="line-chart"></div>
-  <hr>
-  <div>
-  	<div id="date-parsers-switch"></div>
+  <div id="ui">
+  	<div id="holder"> 
+		<div class="instructions">Drop a pipeline file in here!</div>
+	  	<div id="date-parsers-switch"><span class="label">Date format:</span> </div>
+  	</div> 
   	<div id="line-colour-switches"></div>
-  	TODO : Controls: line colour, date pattern
+  	TODO : line colour editing, key/ labeling, rebasing
   </div>
+  <div id="line-chart"></div>
 </body>
 
 <script type="text/javascript">
+	//utitlities
+	
 	var addEvent = (function () {
 	  if (document.addEventListener) {
 	    return function (el, type, fn) {
@@ -92,6 +199,22 @@
 </script>
 
 <script>
+	var settings = {};
+
+	//settings UI
+	var dateParsers = {
+		'DD MMM YYYY': d3.time.format('%d %b %Y').parse, 
+		'YYYY': d3.time.format('%Y').parse,
+		'YYYY/MM/DD': d3.time.format('%Y/%b/%d').parse,
+		'YYYY-MM-DD': d3.time.format('%Y-%b-%d').parse
+	};
+
+	var dateParserSwitch = switchInputFactory( 'date-parsers-switch', [ 'DD MMM YYYY', 'YYYY', 'YYYY/MM/DD', 'YYYY-MM-DD' ]);
+	$(dateParserSwitch).on('state-change', function(){
+		settings.dateParser = dateParsers[this.state];
+	});
+
+	//drag and drop stuff
 	var holder = document.getElementById('holder');
 	holder.ondragover = function () { this.className = 'hover'; return false; };
 	holder.ondragend = function () { this.className = ''; return false; };
@@ -104,14 +227,19 @@
 
 		reader.onload = function (event) {
 			var pipeline = pipelineParse(event.target.result);
+			//remove the old chart
+			$('#line-chart').empty().removeClass( 'error' );
+			$.extend(pipeline, settings); 	//megre user UI settings intio pipeline file defined settings
 			var errors = lineChart(pipeline, '#line-chart').error;
+			
 			if(Object.keys(errors).length > 0){
-				d3.select('#line-chart').select('svg').attr('class','error');
 				console.log('err',errors);
+				$('#line-chart').addClass( 'error' );
 			}
 		};
 		reader.readAsText(file);
 		return false;
 	};
+
 </script>
 </html>

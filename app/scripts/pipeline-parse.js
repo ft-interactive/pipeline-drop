@@ -12,7 +12,9 @@ function pipelineParse( text ){
 				var bits = lines[i].split('=');
 				bits[0] = bits[0].replace('&','').trim();
 				bits[1] = bits[1].trim();
-				p[bits[0]] = bits[1];
+				if(bits[1] != 'delete if not required'){
+					p[bits[0]] = bits[1];
+				}
 			}
 		}
 		return p;
