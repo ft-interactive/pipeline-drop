@@ -3,11 +3,14 @@ function lineChart(config, parentselector){
 	var chart = {
 		height:400,
 		width:300,
-		margin:{top:100,left:20,bottom:70,right:20},
+		/*			//these postions over ride the stack layout
+		chartposition:{top:100,left:20,bottom:70,right:20}
 		titleposition:{top:30,left:0},
 		subposition:{top:55,left:0},
 		footnoteposition:{bottom:20, left:0},
-		keyposition:{top:20, left:0},
+		keyposition:{top:20, left:0},*/
+		displayHeight: 300,
+		displayWidth: 250,
 		indexProperty:'&',
 		dateParser:d3.time.format('%d %b %Y').parse,
 		falseorigin:false, //TODO, find out if there's a standard 'pipeline' temr for this
@@ -21,6 +24,7 @@ function lineChart(config, parentselector){
 	chartLines, timeDomain, extents, valueDomain, svg, timeScale, valueScale, valueAxis, timeAxis, lines, footer, calculatedKeyHeight;
 
 	function translate(position){
+		console.log(position)
 		var y = 0, x = 0;
 
 		if(position.top){
@@ -46,22 +50,29 @@ function lineChart(config, parentselector){
 		return (d != chart.indexProperty);
 	});
 
-//work out all the positions in a simple stack layout... 
-	var stackPosition = 0;
-	var stack = {}
+//work out all the positions in a simple stack layout, the default... 
+	var stackPosition = 30;
+	var stack = {}; //this object is used for positioning stuff
 	if(chart.title){
+		chart.titleposition = {top:stackPosition, left:0};
 		stackPosition += 30;
-		stack.titleposition = stackPosition;
 	}
 	if(chart.subtitle){
+		chart.subposition = {top:stackPosition, left:0};
 		stackPosition += 30;
-		stack.titleposition = stackPosition;
 	}
 	if(chartLines.length > 1){
 		calculatedKeyHeight = keyLineHeight * chartLines.length;
-		stackPosition += calculatedKeyHeight
+		chart.keyposition = {top:stackPosition, left:0};
+		stackPosition += calculatedKeyHeight;
 	}
-
+	chart.chartposition = {top:stackPosition, left:30};
+	stackPosition += chart.displayHeight;
+	if(chart.source){
+		stackPosition += 50;
+		chart.footnoteposition = {top:stackPosition, left:0};
+	}
+	stackPosition += 50;
 
 	//sort out the dates
 
@@ -110,8 +121,6 @@ function lineChart(config, parentselector){
 	}
 	
 	//create the scale
-	chart.displayWidth = chart.width - (chart.margin.left + chart.margin.right);
-	chart.displayHeight = chart.height - (chart.margin.top + chart.margin.bottom);
 	
 	timeScale = d3.time.scale()
 		.range( [0, chart.displayWidth] )
@@ -134,8 +143,8 @@ function lineChart(config, parentselector){
 	//set up the SVG
 	svg = d3.select(parentselector).insert('svg').attr({
 		width:chart.width,
-		height:chart.height
-	}).append('g').attr('transform',translate(chart.margin));
+		height:stackPosition
+	}).append('g').attr('transform',translate(chart.chartposition));
 
 	//add the axes
 	svg.call(valueAxis);
