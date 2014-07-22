@@ -10,9 +10,15 @@
 	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
 	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-date-axis.js"></script>
 	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-value-axis.js"></script>
-	<script type="text/javascript" src="scripts/linechart.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-text-area.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-line-key.js"></script>
+	<!-- <script type="text/javascript" src="scripts/linechart.js"></script> -->
+
+	<script type="text/javascript" src="scripts/linechart-reusable.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/axes.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/lines.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/textarea.css">
 
 	<!-- data parsing -->
 	<script type="text/javascript" src="scripts/pipeline-parse.js"></script>
@@ -127,13 +133,16 @@
 	svg.error{
 		border: solid 5px #f00;
 	}
+	.ft-logo{
+		fill:rgba(0,0,0,0.2);
+	}
 </style>
 
 <style>
 
 	.chart-title{
 		font-size: 20px;
-		fill:rgba(0,0,0,0.5);
+		fill:rgba(0,0,0,0.8);
 	}
 
 	.chart-subtitle{
@@ -148,7 +157,7 @@
 	}
 
 	.chart-source{
-		fill:rgba(0,0,0,0.3);
+		fill:rgba(0,0,0,0.5);
 		font-size: 0.8rem;
 		font-style: italic;
 	}
@@ -230,12 +239,10 @@
 			//remove the old chart
 			$('#line-chart').empty().removeClass( 'error' );
 			$.extend(pipeline, settings); 	//megre user UI settings intio pipeline file defined settings
-			var errors = lineChart(pipeline, '#line-chart').error;
-			
-			if(Object.keys(errors).length > 0){
-				console.log('err',errors);
-				$('#line-chart').addClass( 'error' );
-			}
+
+			var myLine = ft.charts.lineChart();
+			d3.select('#line-chart').data([pipeline])
+					.call(myLine);
 		};
 		reader.readAsText(file);
 		return false;
