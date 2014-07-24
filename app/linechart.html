@@ -20,7 +20,8 @@
 
 	<!-- data parsing -->
 	<script type="text/javascript" src="scripts/pipeline-parse.js"></script>
-
+	<!-- saving -->
+	<script type="text/javascript" src="scripts/saver.js"></script>
 	<!-- UI -->
 	<script type="text/javascript" src="bower_components/ig-switches/switches.js"></script>
 
@@ -80,52 +81,6 @@
 	}
 </style>
 
-<style type="text/css">
-	line.key-line{
-		fill:none;
-		stroke-width:1.5;
-		stroke-linejoin:round;
-		stroke-linecap:round;
-	}
-</style>
-
-<style>
-	path.line{
-		fill:none;
-		stroke-width:1.5;
-		stroke-linejoin:round;
-		stroke-linecap:round;
-	}
-
-	.series1{
-		stroke:rgb(175,81,108);
-	}
-	.series2{
-		stroke:rgb(236,175,175);
-	}
-	.series3{
-		stroke:rgb(215,112,108);
-	}
-	.series4{
-		stroke:rgb(118,172,184);
-	}
-	.series5{
-		stroke:rgb(129,208,230);
-	}
-	.series6{
-		stroke:rgb(78,134,182);
-	}
-	.series7{
-		stroke:rgb(184,177,169);
-	}
-	.accent{
-		stroke:rgb(184,177,169);
-	}
-	.forecast{
-		stroke-dasharray:4,5;
-	}
-
-</style>
 
 <style type="text/css">
 	svg.error{
@@ -136,33 +91,9 @@
 	}
 </style>
 
-<style>
-
-	.chart-title{
-		font-size: 20px;
-		fill:rgba(0,0,0,0.8);
-	}
-
-	.chart-subtitle{
-		fill:rgba(0,0,0,0.5);
-	}
-
-
-	.chart-footnote{
-		fill:rgba(0,0,0,0.3);
-		font-size: 0.8rem;
-		font-style: italic;
-	}
-
-	.chart-source{
-		fill:rgba(0,0,0,0.5);
-		font-size: 0.8rem;
-		font-style: italic;
-	}
-
-	.key-label{
-		font-size: 13px;
-		fill:rgba(0,0,0,0.5);
+<style type="text/css">
+	#image-scratch{
+		display:none;
 	}
 </style>
 
@@ -172,9 +103,9 @@
 	  	<div id="date-parsers-switch"><span class="label">Date format:</span> </div>
   	</div> 
   	<div id="line-colour-switches"></div>
-  	TODO : line colour editing, key/ labeling, rebasing
   </div>
   <div id="line-chart"></div>
+  <div id="options"></div>
 </body>
 
 <script type="text/javascript">
@@ -241,6 +172,11 @@
 			var myLine = ft.charts.lineChart();
 			d3.select('#line-chart').data([pipeline])
 					.call(myLine);
+			if(!$('#save').length){
+				$('#options').append('<button id="save" class="inactive-switch-state">Download the chart</button>');
+				$('#options').append('<canvas id="image-scratch" width="' + $('.line-chart').width() + '" height="' + $('.line-chart').height() + '"></canvas>')
+			}
+			$('#save').on('click', getSVG);
 		};
 		reader.readAsText(file);
 		return false;
