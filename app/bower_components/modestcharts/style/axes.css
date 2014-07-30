@@ -1,0 +1,45 @@
+.axis{
+	font-family: sans-serif;
+}
+
+.y.axis, 
+.x.axis{
+	fill:none;
+	stroke:rgba(0,0,0,0.5);
+}
+
+
+.y.axis text, 
+.x.axis text{
+	fill:rgba(0,0,0,0.5);
+	stroke:none;
+}
+
+.y.axis .domain{
+	stroke:none;
+}
+
+.secondary .domain, 
+.secondary .tick{
+	stroke:none;
+}
+
+.primary .tick text{
+	font-size: 0.9rem;
+}
+
+.secondary .tick text{
+	font-size: 0.7rem;
+}
+
+.y.axis .tick line{
+	stroke:rgba(0,0,0,0.1);
+}
+
+line.origin{
+	stroke:rgba(0,0,0,0.5);
+}
+
+.y.axis text{
+	text-anchor:end;
+}
