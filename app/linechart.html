@@ -31,13 +31,18 @@
 <body>
 
 <style type="text/css">
-	* {
+	*,p {
 		font-family: sans-serif;
 	}
+
 	#ui{
 		float: left;
 	}
 
+	#notes{
+		clear: both;
+		font-family: sans-serif;
+	}
 	#holder { 
 		border: 5px dashed #ccc; 
 		width: 300px; 
@@ -106,6 +111,19 @@
   </div>
   <div id="line-chart"></div>
   <div id="options"></div>
+  <div id="notes">
+  	<hr>
+  	<p>extended pipeline options</p>
+  	<ul>
+  		<li>&height={total chart height}</li>
+		<li>&width={total chart width}</li>
+		<li>&chartHeight={height of the plot area}</li>
+		<li>&chartWidth={width of the plot area}</li>
+		<li>&blockPadding={vertical space between chart elements}</li>
+		<li>&indexProperty={name of the column with the dates in (defaults to '&') }</li>
+		<li>&falseorigin={true or false, if it's true thgen the chart won't start at 0}</li>
+	</ul>
+  </div>
 </body>
 
 <script type="text/javascript">
@@ -170,8 +188,10 @@
 			$.extend(pipeline, settings); 	//megre user UI settings intio pipeline file defined settings
 
 			var myLine = ft.charts.lineChart();
+
 			d3.select('#line-chart').data([pipeline])
-					.call(myLine);
+				.call(myLine);
+
 			if(!$('#save').length){
 				$('#options').append('<button id="save" class="inactive-switch-state">Download the chart</button>');
 				$('#options').append('<canvas id="image-scratch" width="' + $('.line-chart').width() + '" height="' + $('.line-chart').height() + '"></canvas>')
