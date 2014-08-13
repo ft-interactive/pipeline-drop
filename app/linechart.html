@@ -7,12 +7,8 @@
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 
 	<!-- chart drawing -->
-	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
-	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-date-axis.js"></script>
-	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-value-axis.js"></script>
-	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-text-area.js"></script>
-	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-line-key.js"></script>
-	<script type="text/javascript" src="bower_components/modestcharts/js/chart/ft-linechart.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/vendor.js"></script>
+	<script type="text/javascript" src="bower_components/modestcharts/modest-charts.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/axes.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/modestcharts/style/lines.css">
@@ -155,6 +151,9 @@
 </script>
 
 <script>
+console.log('got d3?', d3);
+var modestCharts = require('modestCharts');
+
 	var settings = {};
 
 	//settings UI
@@ -187,13 +186,13 @@
 			$('#line-chart').empty().removeClass( 'error' );
 			$.extend(pipeline, settings); 	//megre user UI settings intio pipeline file defined settings
 
-			var myLine = ft.charts.lineChart();
+			var myLine = modestCharts.lineChart();
 
 			d3.select('#line-chart').data([pipeline])
 				.call(myLine);
 
 			if(!$('#save').length){
-				$('#options').append('<button id="save" class="inactive-switch-state">Download the chart</button>');
+				//$('#options').append('<button id="save" class="inactive-switch-state">Download the chart</button>');
 				$('#options').append('<canvas id="image-scratch" width="' + $('.line-chart').width() + '" height="' + $('.line-chart').height() + '"></canvas>')
 			}
 			$('#save').on('click', getSVG);

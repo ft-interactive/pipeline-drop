@@ -15,7 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "d3": "~3.4.9",
     "modestcharts": "http://git.svc.ft.com:8080/scm/iglt/d3-chart-bits.git",
     "ig-switches": "git+https://github.com/ft-interactive/ig-switches.git"
   }

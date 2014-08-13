@@ -1,20 +1,15 @@
 'use strict'
 
-if(!ft){
-	var ft = {};
-}
+var d3 = require('d3'),
 
-if(!ft.charts){
-	ft.charts = {};
-}
-
-ft.charts.dateAxis = function(){
+dateAxis = function(){
 
 	var axes = [ d3.svg.axis().orient('bottom') ],
 		scale,
 		lineheight = 20, 
 		ticksize = -5,
 		formatter = {},
+		simple = false, // a simple axis has only first and last points as ticks, i.e. the scale's domain extent
 		units = ['multi'],
 		unitOverride = false,
 		yOffset = 0,
@@ -142,6 +137,12 @@ ft.charts.dateAxis = function(){
 		bounds = g.node().getBoundingClientRect();
 	}
 
+	axis.simple = function(x){
+		if (!arguments.length) return simnple;
+		simple = x;
+		return axis;
+	}
+
 	axis.labelWidth = function(){
 		// return the width of the widest axis label
 		return labelWidth;
@@ -171,18 +172,24 @@ ft.charts.dateAxis = function(){
 			u = unitGenerator( x.domain() );
 		}
 		scale = x;
-		scale.nice( (scale.range()[1] - scale.range()[0])/100 );
+		if(!simple){
+			scale.nice( (scale.range()[1] - scale.range()[0])/100 );
+		}
 		//go through the units array
 
 		axes = [];
 		for(var i=0;i<u.length;i++){
 			if( formatter[u[i]] ){
-				var customTicks = scale.ticks( interval[ u[i] ], increment[ u[i] ] );
-				customTicks.push(scale.domain()[0])
-				if(null){
-					customTicks.push(scale.domain()[1])
+				if(!simple){
+					var customTicks = scale.ticks( interval[ u[i] ], increment[ u[i] ] );
+					customTicks.push(scale.domain()[0]);
+					if(null){
+						customTicks.push(scale.domain()[1]);
+					}
+					customTicks.sort(dateSort);
+				}else{
+					customTicks = scale.domain();
 				}
-				customTicks.sort(dateSort)
 
 
 				var a = d3.svg.axis()
@@ -216,4 +223,6 @@ ft.charts.dateAxis = function(){
 
 
 	return axis;
-}
+};
+
+module.exports = dateAxis;
