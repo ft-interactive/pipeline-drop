@@ -1,4 +1,152 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// because of the need to export and convert browser rendered SVGs 
+// we need a simple way to attach styles as attributes if necessary, 
+// so, heres a list of attributes and the selectors to which they should be applied
+
+var d3 = require('d3');
+
+function applyAttributes(){
+	var styleList = [
+		//general
+			{
+				'selector':'svg text',
+				'attributes':{
+					'font-family':'sans-serif',
+					'fill':'#a7a59b',
+					'stroke':'none'
+				}
+			},
+		//axes
+			{
+				'selector':'.axis path, .axis line',
+				'attributes':{
+					'shape-rendering':'crispEdges',
+					'fill':'none'
+				}
+			},{
+				'selector':'.y.axis path.domain, .secondary path.domain, .secondary .tick line',
+				'attributes':{
+					'stroke':'none'
+				}
+			},{
+				'selector':'.primary .tick text',
+				'attributes':{
+					'font-size':'15'
+				}
+			},{
+				'selector':'.secondary .tick text',
+				'attributes':{
+					'font-size':'12'
+				}
+			},{
+				'selector':'.primary .tick line',
+				'attributes':{
+					'stroke':'#a7a59b'
+				}
+			},{
+				'selector':'line.origin',
+				'attributes':{
+					'stroke':'#333'
+				}
+			},{
+				'selector':'.y.axis text',
+				'attributes':{
+					'text-anchor':'end'
+				}
+			},
+		//lines
+			{
+				'selector':'path.line, line.key-line',
+				'attributes':{
+					'fill':'none',
+					'stroke-width':'1.5',
+					'stroke-linejoin':'round',
+					'stroke-linecap':'round'
+				}
+			},{
+				'selector':'path.series1, line.series1',
+				'attributes':{
+					'stroke':'#af516c'
+				}
+			},{
+				'selector':'path.series2, line.series2',
+				'attributes':{
+					'stroke':'#ecafaf'
+				}
+			},{
+				'selector':'path.series3, line.series3',
+				'attributes':{
+					'stroke':'#d7706c'
+				}
+			},{
+				'selector':'path.series4, line.series4',
+				'attributes':{
+					'stroke':'#76acb8'
+				}
+			},{
+				'selector':'path.series5, line.series5',
+				'attributes':{
+					'stroke':'#81d0e6'
+				}
+			},{
+				'selector':'path.series6, line.series6',
+				'attributes':{
+					'stroke':'#4086b6'
+				}
+			},{
+				'selector':'path.series7, line.series7',
+				'attributes':{
+					'stroke':'#b8b1a9'
+				}
+			},{
+				'selector':'path.accent, line.accent',
+				'attributes':{
+					'stroke':'#9e2f00'
+				}
+			},
+			//text
+			{
+				'selector':'.chart-title text, .chart-title tspan',
+				'attributes':{
+					'font-size':20,
+					'fill':'#000'
+				}
+			},{
+				'selector':'.chart-subtitle text, .chart-subtitle tspan',
+				'attributes':{
+					'font-size':18,
+					'fill':'#000'
+				}
+			},{
+				'selector':'.chart-subtitle text, .chart-subtitle tspan',
+				'attributes':{
+					'fill':'#000'
+				}
+			},{
+				'selector':'text.chart-source, text.chart-footer',
+				'attributes':{
+					'font-size':'15',
+					'fill':'#000'
+				}
+			},{
+				'selector':'text.key-label',
+				'attributes':{
+					'fill':'#000'
+				}
+			}
+		];
+
+
+	for(var s in styleList){
+		s = styleList[s];	
+		console.log(s, s.selector);
+		d3.selectAll(s.selector).attr(s.attributes);
+	}
+	return true;
+}
+
+module.exports = applyAttributes;
+},{"d3":"d3"}],2:[function(require,module,exports){
 'use strict'
 
 var d3 = require('d3'),
@@ -68,7 +216,7 @@ categoryAxis = function(){
 };
 
 module.exports = categoryAxis;
-},{"d3":undefined}],2:[function(require,module,exports){
+},{"d3":"d3"}],3:[function(require,module,exports){
 'use strict'
 
 var d3 = require('d3'),
@@ -259,7 +407,6 @@ dateAxis = function(){
 					}
 					customTicks.sort(dateSort);
 				}else{
-					console.log(u[i]);
 					if(u[i] =='years' || u[i] =='decades' || u[i] =='centuries'){
 						u[i] = 'fullyears'; //simple axis always uses full years
 					}
@@ -301,7 +448,7 @@ dateAxis = function(){
 };
 
 module.exports = dateAxis;
-},{"d3":undefined}],3:[function(require,module,exports){
+},{"d3":"d3"}],4:[function(require,module,exports){
 //reusable linechart 
 'use strict'
 
@@ -557,7 +704,7 @@ lineChart = function(p){
 };
 
 module.exports = lineChart;
-},{"./ft-date-axis.js":2,"./ft-line-key.js":4,"./ft-text-area.js":7,"./ft-value-axis.js":8,"d3":undefined}],4:[function(require,module,exports){
+},{"./ft-date-axis.js":3,"./ft-line-key.js":5,"./ft-text-area.js":8,"./ft-value-axis.js":9,"d3":"d3"}],5:[function(require,module,exports){
 'use strict'
 
 var d3 = require('d3'),
@@ -635,7 +782,7 @@ lineKey = function(){
 
 module.exports = lineKey;
 
-},{"d3":undefined}],5:[function(require,module,exports){
+},{"d3":"d3"}],6:[function(require,module,exports){
 'use strict';
 var d3 = require('d3');
 
@@ -703,7 +850,7 @@ var nullChart = function(){
 }
 
 module.exports = nullChart;
-},{"d3":undefined}],6:[function(require,module,exports){
+},{"d3":"d3"}],7:[function(require,module,exports){
 'use strict';
 var d3 = require('d3');
 
@@ -773,7 +920,7 @@ var pieChart = function(){
 		chart.selectAll('.slice')
 			.data( model.data )
 				.enter()
-					.append(path);
+					//.append(path);
 		
 		svg.selectAll('text').attr({
 			fill:'#000',
@@ -786,7 +933,7 @@ var pieChart = function(){
 }
 
 module.exports = pieChart;
-},{"d3":undefined}],7:[function(require,module,exports){
+},{"d3":"d3"}],8:[function(require,module,exports){
 //text area provides a wrapping text block of a given type
 
 'use strict'
@@ -884,7 +1031,7 @@ textArea = function(){
 };
 
 module.exports = textArea;
-},{"d3":undefined}],8:[function(require,module,exports){
+},{"d3":"d3"}],9:[function(require,module,exports){
 'use strict'
 
 //this is wrapper for d3.svg.axis
@@ -1022,7 +1169,7 @@ valueAxis = function(){
 };
 
 module.exports = valueAxis;
-},{"d3":undefined}],"modestCharts":[function(require,module,exports){
+},{"d3":"d3"}],"modestCharts":[function(require,module,exports){
 'use strict';
 var modestCharts = {
 	dateAxis: require('./ft-date-axis.js'),
@@ -1032,8 +1179,9 @@ var modestCharts = {
 	valueAxis: require('./ft-value-axis.js'),
 	lineChart: require('./ft-line-chart.js'),
 	pieChart: require('./ft-pie-chart.js'),
-	nullChart: require('./ft-null-chart.js')
+	nullChart: require('./ft-null-chart.js'),
+	attributeStyler: require('./chart-attribute-styles.js')
 };
 
 module.exports = modestCharts;
-},{"./ft-category-axis.js":1,"./ft-date-axis.js":2,"./ft-line-chart.js":3,"./ft-line-key.js":4,"./ft-null-chart.js":5,"./ft-pie-chart.js":6,"./ft-text-area.js":7,"./ft-value-axis.js":8}]},{},["modestCharts"]);
+},{"./chart-attribute-styles.js":1,"./ft-category-axis.js":2,"./ft-date-axis.js":3,"./ft-line-chart.js":4,"./ft-line-key.js":5,"./ft-null-chart.js":6,"./ft-pie-chart.js":7,"./ft-text-area.js":8,"./ft-value-axis.js":9}]},{},["modestCharts"]);

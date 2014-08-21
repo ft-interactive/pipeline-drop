@@ -5,6 +5,8 @@
 <title>PIPE</title>
 
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+	<script type="text/javascript" src="scripts/canvg/canvg.js"></script>
+
 
 	<!-- chart drawing -->
 	<script type="text/javascript" src="bower_components/modestcharts/vendor.js"></script>
@@ -106,6 +108,7 @@
   	<div id="line-colour-switches"></div>
   </div>
   <div id="line-chart"></div>
+  <div id="output-pane"><canvas id="render-canvas"></canvas></div>
   <div id="options"></div>
   <div id="notes">
   	<hr>
@@ -193,11 +196,25 @@ var modestCharts = require('modestCharts');
 			d3.select('#line-chart').data([pipeline])
 				.call(myLine);
 
-			if(!$('#save').length){
-				//$('#options').append('<button id="save" class="inactive-switch-state">Download the chart</button>');
-				$('#options').append('<canvas id="image-scratch" width="' + $('.line-chart').width() + '" height="' + $('.line-chart').height() + '"></canvas>')
-			}
-			$('#save').on('click', getSVG);
+			d3.select('canvas#render-canvas').attr({
+				width:function(){ return d3.select('#line-chart svg').attr('width'); },
+				height:function(){ return d3.select('#line-chart svg').attr('height'); }
+			});
+
+			modestCharts.attributeStyler();
+
+			d3.select('#line-chart svg').attr('id','saveable');
+
+			var serializer = new XMLSerializer(),
+				SVGString = serializer.serializeToString(document.getElementById('saveable')),
+				canvas = document.getElementById('render-canvas');
+
+			canvg(canvas, SVGString);
+
+			d3.select('#output-pane').append('a')
+				.attr('href', canvas.toDataURL()).html('Save this image');
+
+			d3.select()
 		};
 		reader.readAsText(file);
 		return false;
