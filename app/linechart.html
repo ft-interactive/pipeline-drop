@@ -29,8 +29,12 @@
 <body>
 
 <style type="text/css">
+	@font-face{ 
+		font-family: 'BentonSans';
+		src: url('http://interactivegraphics.ft-static.com/inc/fonts/BentonSansLight.woff') format('woff'),
+	}
 	*,p {
-		font-family: sans-serif;
+		font-family: 'BentonSans', sans-serif;
 	}
 
 	#ui{
@@ -43,12 +47,11 @@
 	}
 	#holder { 
 		border: 5px dashed #ccc; 
-		width: 300px; 
-		height: 300px; 
+		width: 90%; 
 		padding: 50px; 
 		margin: 20px auto;
 		color: #333;
-		float:left;
+		clear: both;
 	}
 
 	#holder.hover { 
@@ -72,11 +75,14 @@
 		color: #eee;
 	}
 
-	#line-chart{
-		border: #FFF solid 1px;
+	#line-chart, #output-pane{
 		float:left;
 		margin: 20px;
 		margin-left: 50px;
+	}
+
+	#line-chart{
+		visibility: hidden;
 	}
 
 	#line-chart.error{
@@ -100,15 +106,13 @@
 	}
 </style>
 
-  <div id="ui">
   	<div id="holder"> 
 		<div class="instructions">Drop a pipeline file in here!</div>
 	  	<div id="date-parsers-switch"><span class="label">Date format:</span> </div>
-  	</div> 
-  	<div id="line-colour-switches"></div>
-  </div>
-  <div id="line-chart"></div>
+  </div> 
   <div id="output-pane"><canvas id="render-canvas"></canvas></div>
+  <div id="line-chart"></div>
+
   <div id="options"></div>
   <div id="notes">
   	<hr>
@@ -210,9 +214,13 @@ var modestCharts = require('modestCharts');
 				canvas = document.getElementById('render-canvas');
 
 			canvg(canvas, SVGString);
+			var saveLink = d3.select('#save-button');
+			console.log(saveLink);
+			if(saveLink[0][0] == null){
+				var saveLink = d3.select('#output-pane').append('a').attr('id','save-button');
+			}
 
-			d3.select('#output-pane').append('a')
-				.attr('href', canvas.toDataURL()).html('Save this image');
+			saveLink.attr('href', canvas.toDataURL()).html('Save this image');
 
 			d3.select()
 		};
