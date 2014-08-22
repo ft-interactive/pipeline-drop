@@ -27,7 +27,14 @@ function applyAttributes(){
 				'attributes':{
 					'stroke':'none'
 				}
-			},{
+			},
+			{
+				'selector':'.y.axis .tick line',
+				'attributes':{
+					'stroke-dasharray':'2 2'
+				}
+			},
+			{
 				'selector':'.primary .tick text',
 				'attributes':{
 					'font-size':'13',
@@ -53,6 +60,11 @@ function applyAttributes(){
 				'selector':'.y.axis text',
 				'attributes':{
 					'text-anchor':'end'
+				}
+			},{
+				'selector':'.x.axis .primary path.domain',
+				'attributes':{
+					'stroke':'#757470'
 				}
 			},
 		//lines
