@@ -154,7 +154,6 @@ function applyAttributes(){
 
 	for(var s in styleList){
 		s = styleList[s];	
-		console.log(s, s.selector);
 		d3.selectAll(s.selector).attr(s.attributes);
 	}
 	return true;
@@ -546,10 +545,11 @@ lineChart = function(p){
 		});
 
 		//work out the value domain		
-		m.valueDomain = d3.extent( extents );
-
-		if(!m.falseorigin && m.valueDomain[0] > 0){ // unless a false origin has been specified
-			m.valueDomain[0] = 0;
+		if(!m.valueDomain){
+			m.valueDomain = d3.extent( extents );
+			if(!m.falseorigin && m.valueDomain[0] > 0){ // unless a false origin has been specified
+				m.valueDomain[0] = 0;
+			}
 		}
 
 		return m;
@@ -669,8 +669,6 @@ lineChart = function(p){
 				.yOffset( model.chartHeight )	//position the axis at the bottom of the chart
 				.scale( timeScale );
 
-			console.log(valueScale.ticks(), valueScale.domain());
-
 
 		chart.call(vAxis);
 		chart.call(timeAxis);
@@ -713,7 +711,7 @@ lineChart = function(p){
 		});
 	}
 
-	console.log('LC');
+	//console.log('LC');
 
 	return chart;
 };
@@ -742,7 +740,6 @@ lineKey = function(){
 	};
 
 	function key(g){
-		console.log('key', g)
 		g = g.append('g').attr('class','chart-linekey');
 		var keyItems = g.selectAll('g').data( g.datum().filter( filter ) )
 				.enter()
@@ -1001,7 +998,6 @@ textArea = function(){
 				return d;
 			}
 		}
-		console.log('text!')
 		g = g.append('g').attr('transform','translate(' + xOffset + ',' + yOffset + ')')
 		g.append('text').text(accessor).call(wrap, width);
 		bounds = g.node().getBoundingClientRect();

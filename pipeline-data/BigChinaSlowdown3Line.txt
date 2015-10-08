@@ -25,3 +25,4 @@
 &comment=Line chart					
 &doublescale=0					
 &accumulate=false					
+&valueDomain=20,50

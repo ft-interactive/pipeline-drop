@@ -109,6 +109,8 @@
   	<div id="holder"> 
 		<div class="instructions">Drop a pipeline file in here!</div>
 	  	<div id="date-parsers-switch"><span class="label">Date format:</span> </div>
+	  	<div id="multi-switch"><span class="label">Display type:</span></div>
+
   </div> 
   <div id="output-pane"><canvas id="render-canvas"></canvas></div>
   <div id="line-chart"></div>
@@ -163,7 +165,9 @@
 console.log('got d3?', d3);
 var modestCharts = require('modestCharts');
 
-	var settings = {};
+	var settings = {
+		indexProperty:'&'
+	};
 
 	//settings UI
 	var dateParsers = {
@@ -174,6 +178,8 @@ var modestCharts = require('modestCharts');
 	};
 
 	var dateParserSwitch = switchInputFactory( 'date-parsers-switch', [ 'DD MMM YYYY', 'YYYY', 'YYYY/MM/DD', 'YYYY-MM-DD' ]);
+	var multiSwitch = switchInputFactory( 'multi-switch', ['Single chart','Chart per line','Chart per prefix']);
+
 	$(dateParserSwitch).on('state-change', function(){
 		settings.dateParser = dateParsers[this.state];
 	});
@@ -191,9 +197,10 @@ var modestCharts = require('modestCharts');
 
 		reader.onload = function (event) {
 			var pipeline = pipelineParse(event.target.result);
+			console.log(pipeline.data);
 			//remove the old chart
 			$('#line-chart').empty().removeClass( 'error' );
-			$.extend(pipeline, settings); 	//megre user UI settings intio pipeline file defined settings
+			$.extend(pipeline, settings); 	//megre user UI settings into pipeline file defined settings
 
 			var myLine = modestCharts.lineChart();
 

@@ -1,7 +1,7 @@
 'use strict';
 console.log("parser here");
 
-function pipelineParse( text ){
+function pipelineParse( text, opts ){
 	function getProperties( lines ){
 		var p = {};
 		for(var i = 0; i <lines.length; i++){
@@ -13,6 +13,9 @@ function pipelineParse( text ){
 				bits[0] = bits[0].replace('&','').trim();
 				bits[1] = bits[1].trim();
 				if(bits[1] != 'delete if not required'){
+					if(bits[0] == 'valueDomain'){
+						bits[1] = bits[1].split(',').map(function(d){ return parseInt(d, 10); });
+					}
 					p[bits[0]] = bits[1];
 				}
 			}
@@ -38,9 +41,10 @@ function pipelineParse( text ){
 		for (var h in pipeline.headings){
 			row[pipeline.headings[h]] = bits[h];
 		}
+		//console.log(row)
 		return row;
 	});
-
+	console.log('pipeline ' , pipeline)
 	return pipeline;
 }
 

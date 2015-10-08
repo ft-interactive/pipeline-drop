@@ -80,10 +80,11 @@ lineChart = function(p){
 		});
 
 		//work out the value domain		
-		m.valueDomain = d3.extent( extents );
-
-		if(!m.falseorigin && m.valueDomain[0] > 0){ // unless a false origin has been specified
-			m.valueDomain[0] = 0;
+		if(!m.valueDomain){
+			m.valueDomain = d3.extent( extents );
+			if(!m.falseorigin && m.valueDomain[0] > 0){ // unless a false origin has been specified
+				m.valueDomain[0] = 0;
+			}
 		}
 
 		return m;
@@ -203,8 +204,6 @@ lineChart = function(p){
 				.yOffset( model.chartHeight )	//position the axis at the bottom of the chart
 				.scale( timeScale );
 
-			console.log(valueScale.ticks(), valueScale.domain());
-
 
 		chart.call(vAxis);
 		chart.call(timeAxis);
@@ -247,7 +246,7 @@ lineChart = function(p){
 		});
 	}
 
-	console.log('LC');
+	//console.log('LC');
 
 	return chart;
 };
